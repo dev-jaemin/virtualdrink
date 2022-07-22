@@ -3,6 +3,7 @@ import Intro from "./page/intro/Intro";
 import Main from "./page/main/main";
 
 import "./App.css";
+import Socket from "./page/socket/Socket";
 
 function App() {
     return (
@@ -11,6 +12,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Intro />} exact />
                     <Route path="/main" element={<Main />} exact />
+                    <Route path="/socket" element={<Socket />} />
                 </Routes>
             </BrowserRouter>
         </div>
