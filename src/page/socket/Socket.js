@@ -10,11 +10,17 @@ const pc_config = {
         //   'username': '[USERNAME]'
         // },
         {
-            urls: process.env.REACT_APP_STUN_HOST,
+            urls: [
+                "stun:stun.l.google.com:19302",
+                "stun:stun1.l.google.com:19302",
+                "stun:stun2.l.google.com:19302",
+                "stun:stun3.l.google.com:19302",
+                "stun:stun4.l.google.com:19302",
+            ],
         },
     ],
 };
-const SOCKET_SERVER_URL = process.env.REACT_APP_APIHOST;
+const SOCKET_SERVER_URL = "https://virtualdrink.kro.kr";
 
 const Socket = () => {
     const socketRef = useRef();
@@ -22,10 +28,12 @@ const Socket = () => {
     const sendPCRef = useRef();
     const receivePCsRef = useRef({});
     const [users, setUsers] = useState([]);
+    const [tmp, setTmp] = useState(false);
 
     const localVideoRef = useRef(null);
 
     const closeReceivePC = useCallback((id) => {
+        console.log(`close : ${id}`);
         if (!receivePCsRef.current[id]) return;
         receivePCsRef.current[id].close();
         delete receivePCsRef.current[id];
@@ -75,6 +83,7 @@ const Socket = () => {
 
             pc.ontrack = (e) => {
                 console.log("ontrack success");
+
                 setUsers((oldUsers) =>
                     oldUsers
                         .filter((user) => user.id !== socketID)
@@ -191,6 +200,7 @@ const Socket = () => {
         });
 
         socketRef.current.on("allUsers", (data) => {
+            console.log(data);
             data.users.forEach((user) => createReceivePC(user.id));
         });
 
@@ -235,7 +245,6 @@ const Socket = () => {
 
         socketRef.current.on("getReceiverCandidate", async (data) => {
             try {
-                console.log(data);
                 console.log(`get socketID(${data.id})'s candidate`);
                 const pc = receivePCsRef.current[data.id];
                 if (!(pc && data.candidate)) return;

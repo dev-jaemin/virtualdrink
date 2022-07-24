@@ -20,6 +20,7 @@ const Video = ({ stream, muted }) => {
     const [isMuted, setIsMuted] = useState(false);
 
     useEffect(() => {
+        console.log("stream : ", stream);
         if (ref.current) ref.current.srcObject = stream;
         if (muted) setIsMuted(muted);
     }, [stream, muted]);
