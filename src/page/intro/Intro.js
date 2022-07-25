@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Intro = () => {
     return (
         <div>
-            intro page!!!
+            Virtual Drink
             <Link to="/info">
                 <button>Enter</button>
             </Link>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import characterImages from "../user/CharacterArray";
 import background from "../../static/image/characterimages/bkgnd.png";
+import { hasSelectionSupport } from "@testing-library/user-event/dist/utils";
 
 const MAP_CONSTANTS = {};
 MAP_CONSTANTS.IMG_WIDTH = 116;
@@ -15,9 +16,10 @@ MAP_CONSTANTS.FRAMES_LENGTH = 8;
 const Main = () => {
     const users = [
         { id: 123, name: "jaemin", characterType: "man1" },
-        { id: 123, name: "jaemin", characterType: "man1" },
-        { id: 123, name: "jaemin", characterType: "man1" },
-        { id: 123, name: "jaemin", characterType: "woman1" },
+        { id: 124, name: "yejin", characterType: "woman1" },
+        { id: 125, name: "minjae", characterType: "man1" },
+        { id: 126, name: "gahee", characterType: "woman1" },
+        { id: 127, name: "sangyeob", characterType: "man1"}
     ];
     const canvasRef = useRef(null);
     const requestAnimationRef = useRef(null);
@@ -33,9 +35,28 @@ const Main = () => {
         positionRef.current[0] = { x: newX, y: newY };
         setCurrentFrame(dir);
     };
-    users.forEach((item) => {
-        positionRef.current.push({ x: 0, y: 0 });
-    });
+    // users.forEach((item) => {
+    //     positionRef.current.push({ x: 0, y: 0 });
+    // });
+    positionRef.current.push({ x: 50, y: 50})
+    positionRef.current.push({ x: 100, y: 20})
+    positionRef.current.push({ x: 500, y: 500})
+    positionRef.current.push({ x: 350, y: 400})
+    positionRef.current.push({x: 200, y: 500})
+    
+    const writeText = (info, style = {}) => {
+        const context = canvasRef.current.getContext("2d");
+        const { text, x, y} = info;
+        const { fontSize = 20, fontFamily = 'Arial', color = 'black', textAlign = 'center', textBaseline = 'top'} = style;
+
+        context.beginPath();
+        context.font = fontSize + 'px ' + fontFamily;
+        context.textAlign = textAlign;
+        context.textBaseline = textBaseline;
+        context.fillStyle = color;
+        context.fillText(text, x, y);
+        context.stroke();
+    } 
     const render = () => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -43,17 +64,18 @@ const Main = () => {
         users.forEach((item) => {
             characters.push(new Image());
         });
-        characters.forEach((character, index) => {
+        characters.forEach((character, index) => { 
             if (users[index].characterType === "woman1") {
-                character.src = characterImages.woman1[currentFrame];
+                character.src = index === 0 ? characterImages.woman1[currentFrame] : characterImages.woman1[0];
             } else if (users[index].characterType === "man1") {
-                character.src = characterImages.man1[currentFrame];
+                character.src = index === 0 ? characterImages.man1[currentFrame] : characterImages.man1[0];
             }
             character.onload = () => {
                 if (index === 0) {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
                 }
+                writeText({ text: users[index].name, x: positionRef.current[index].x + 22, y: positionRef.current[index].y - 15})
                 context.drawImage(character, positionRef.current[index].x, positionRef.current[index].y);
             };
         });
