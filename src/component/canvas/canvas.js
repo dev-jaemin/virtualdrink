@@ -12,19 +12,14 @@ MAP_CONSTANTS.KEY_UP = 40;
 MAP_CONSTANTS.SPEED = 8;
 MAP_CONSTANTS.FRAMES_LENGTH = 8;
 
-const Main = () => {
-    const users = [
-        { id: 123, name: "jaemin", characterType: "man1" },
-        { id: 123, name: "jaemin", characterType: "man1" },
-        { id: 123, name: "jaemin", characterType: "man1" },
-        { id: 123, name: "jaemin", characterType: "woman1" },
-    ];
+const Main = ({ sendMyPosition, users }) => {
     const canvasRef = useRef(null);
     const requestAnimationRef = useRef(null);
     const positionRef = useRef([]);
     const [pressedKey, setPressedKey] = useState(null);
     const [currentFrame, setCurrentFrame] = useState(0);
 
+    // TODO : 0번이 아니라 자기 자신이 움직이도록 코드 수정 필요
     const move = ({ x, y, dir }) => {
         const newX = positionRef.current[0].x + x;
         const newY = positionRef.current[0].y + y;
@@ -32,10 +27,9 @@ const Main = () => {
         if (newY < 0 || newY > canvasRef.current.height - MAP_CONSTANTS.IMG_HEIGHT) return;
         positionRef.current[0] = { x: newX, y: newY };
         setCurrentFrame(dir);
+        sendMyPosition(newX, newY, dir);
     };
-    users.forEach((item) => {
-        positionRef.current.push({ x: 0, y: 0 });
-    });
+
     const render = () => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -79,7 +73,7 @@ const Main = () => {
             case null:
                 return;
             default:
-                move({ x: 0, y: 0 });
+                move({ x: 0, y: 0, dir: 0 });
                 return;
         }
     };
@@ -95,6 +89,7 @@ const Main = () => {
             cancelAnimationFrame(requestAnimationRef.current);
         };
     });
+
     return (
         <canvas
             ref={canvasRef}
