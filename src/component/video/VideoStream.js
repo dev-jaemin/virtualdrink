@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import io from "socket.io-client";
-import Video from "../../component/video/Video";
+import Video from "./Video";
 
 const pc_config = {
     iceServers: [

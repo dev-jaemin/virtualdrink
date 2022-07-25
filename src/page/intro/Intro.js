@@ -1,4 +1,3 @@
-import Info from "./Info";
 import { Link } from "react-router-dom";
 
 const Intro = () => {
