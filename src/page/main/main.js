@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import io from "socket.io-client";
 import Canvas from "../../component/canvas/canvas";
+import ChatComponent from "../../component/chat/ChatComponent";
 import VideoStream from "../../component/video/VideoStream";
 import { pcConfig } from "./config";
 
@@ -17,6 +18,9 @@ const Mainpage = () => {
 
     const [users, setUsers] = useState([]);
     const [usersPos, setUsersPos] = useState([]);
+
+    const [chatData, setChatData] = useState([]);
+    const [chatTextInput, setChatTextInput] = useState("");
 
     const closeReceivePC = useCallback((id) => {
         console.log(`close : ${id}`);
@@ -177,6 +181,16 @@ const Mainpage = () => {
         });
     };
 
+    const sendChat = () => {
+        if (chatTextInput !== "") {
+            socketRef.current.emit("sendChat", {
+                nickname: searchParams.get("nickname") || "guest",
+                text: chatTextInput,
+            });
+            setChatTextInput("");
+        }
+    };
+
     useEffect(() => {
         socketRef.current = io.connect(SOCKET_SERVER_URL);
         getLocalStream();
@@ -244,11 +258,12 @@ const Mainpage = () => {
         });
 
         socketRef.current.on("updatePlayersMovement", async (data) => {
-            // const changedUser = users.filter((user) => {
-            //     return user.id === data.id;
-            // })[0];
-            // console.log(data);
             setUsersPos(Object.values(data.userPos));
+        });
+
+        // for Chatting
+        socketRef.current.on("getChat", (data) => {
+            setChatData((chatData) => [...chatData, data]);
         });
 
         return () => {
@@ -267,6 +282,7 @@ const Mainpage = () => {
         <div>
             <VideoStream localVideoRef={localVideoRef} users={users} />
             <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} />
+            <ChatComponent chatData={chatData} setChatTextInput={setChatTextInput} sendChat={sendChat} />
         </div>
     );
 };

@@ -101,7 +101,7 @@ const Main = ({ sendMyPosition, users, id }) => {
 
     useEffect(() => {
         window.addEventListener("keydown", (e) => {
-            e.preventDefault();
+            //e.preventDefault();
             setPressedKey(e.keyCode);
         });
         window.addEventListener("keyup", () => setPressedKey(null));
