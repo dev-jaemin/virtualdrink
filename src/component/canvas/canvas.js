@@ -15,16 +15,15 @@ MAP_CONSTANTS.FRAMES_LENGTH = 8;
 const Main = ({ sendMyPosition, users, id }) => {
     const canvasRef = useRef(null);
     const requestAnimationRef = useRef(null);
-    let positions = [];
     const [pressedKey, setPressedKey] = useState(null);
-    const [currentFrame, setCurrentFrame] = useState(0);
+    let positions = [];
     let USER_INDEX;
 
     users.forEach((item, index) => {
         if (id === item.id) {
             USER_INDEX = index;
         }
-        positions[index] = { x: item.x, y: item.y };
+        positions[index] = { x: item.x, y: item.y, dir: item.direction };
     });
 
     // TODO : 0번이 아니라 자기 자신이 움직이도록 코드 수정 필요
@@ -34,7 +33,6 @@ const Main = ({ sendMyPosition, users, id }) => {
         if (newX < 0 || newX > canvasRef.current.width - MAP_CONSTANTS.IMG_WIDTH) return;
         if (newY < 0 || newY > canvasRef.current.height - MAP_CONSTANTS.IMG_HEIGHT) return;
         positions[USER_INDEX] = { x: newX, y: newY };
-        setCurrentFrame(dir);
         sendMyPosition(newX, newY, dir);
     };
 
@@ -61,16 +59,16 @@ const Main = ({ sendMyPosition, users, id }) => {
         });
         characters.forEach((character, index) => {
             if (users[index].characterType === "woman1") {
-                character.src = index === 0 ? characterImages.woman1[currentFrame] : characterImages.woman1[0];
+                character.src = characterImages.woman1[users[index].direction];
             } else if (users[index].characterType === "man1") {
-                character.src = index === 0 ? characterImages.man1[currentFrame] : characterImages.man1[0];
+                character.src = characterImages.man1[users[index].direction];
             }
             character.onload = () => {
                 if (index === 0) {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
                 }
-                writeText({ text: users[index].name, x: positions[index].x + 22, y: positions[index].y - 15 });
+                writeText({ text: users[index].nickname, x: positions[index].x + 22, y: positions[index].y - 15 });
                 context.drawImage(character, positions[index].x, positions[index].y);
             };
         });
