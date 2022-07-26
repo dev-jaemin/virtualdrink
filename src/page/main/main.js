@@ -163,9 +163,9 @@ const Mainpage = () => {
 
             socketRef.current.emit("joinRoom", {
                 id: socketRef.current.id,
-                nickname: searchParams.get("nickname") || "guest",
-                characterType: searchParams.get("characterType") || "man1",
-                roomID: searchParams.get("roomID") || "1234",
+                nickname: window.sessionStorage.getItem("nickname") || "guest",
+                characterType: window.sessionStorage.getItem("characterType") || "man1",
+                roomID: window.sessionStorage.getItem("roomID") || "1234",
             });
         } catch (e) {
             console.log(`getUserMedia error: ${e}`);
@@ -184,7 +184,7 @@ const Mainpage = () => {
     const sendChat = () => {
         if (chatTextInput !== "") {
             socketRef.current.emit("sendChat", {
-                nickname: searchParams.get("nickname") || "guest",
+                nickname: window.sessionStorage.getItem("nickname") || "guest",
                 text: chatTextInput,
             });
             setChatTextInput("");

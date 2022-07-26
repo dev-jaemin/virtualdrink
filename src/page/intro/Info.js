@@ -1,25 +1,40 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import man from "../../static/image/characterimages/m0.gif";
 import woman from "../../static/image/characterimages/w0.gif";
 import React, { useState } from "react";
 
 const Info = () => {
-    const clickCheck = (event) => {
-        document.querySelectorAll(`input[type=checkbox]`).forEach((el) => (el.checked = false));
-        event.target.checked = true;
-        setCharacterType(event.target.name);
-    };
+    const navigate = useNavigate();
+
     const [info, setInfo] = useState({
         nickname: "",
         roomID: "",
+        characterType: "man1",
     });
-    const [characterType, setCharacterType] = useState("man1");
+
+    const clickCheck = (e) => {
+        document.querySelectorAll(`input[type=checkbox]`).forEach((el) => (el.checked = false));
+        e.target.checked = true;
+        setInfo({
+            ...info,
+            ["characterType"]: e.target.name,
+        });
+    };
+
     const onChange = (e) => {
         setInfo({
             ...info,
             [e.target.name]: e.target.value,
         });
     };
+
+    const enterMain = () => {
+        Object.keys(info).forEach((key) => {
+            window.sessionStorage.setItem(key, info[key]);
+        });
+        navigate("/main");
+    };
+
     return (
         <div>
             <div>
@@ -40,9 +55,7 @@ const Info = () => {
                 <input type="checkbox" name="woman1" onClick={clickCheck} />
                 <img src={woman} alt="No image" />
             </div>
-            <Link to={encodeURI(`/main?nickname=${info.nickname}&roomID=${info.roomID}&characterType=${characterType}`)}>
-                <button>Enter</button>
-            </Link>
+            <div onClick={enterMain}>Enter</div>
         </div>
     );
 };
