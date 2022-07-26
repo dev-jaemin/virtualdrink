@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import characterImages from "../user/CharacterArray";
 import background from "../../static/image/characterimages/bkgnd.png";
+import { hasSelectionSupport } from "@testing-library/user-event/dist/utils";
 
 const MAP_CONSTANTS = {};
 MAP_CONSTANTS.IMG_WIDTH = 116;
@@ -30,6 +31,25 @@ const Main = ({ sendMyPosition, users }) => {
         sendMyPosition(newX, newY, dir);
     };
 
+    users.forEach((item, index)=>{
+        positionRef.current[index] = {x : item.x, y: item.y};
+    })
+
+    
+    const writeText = (info, style = {}) => {
+        const context = canvasRef.current.getContext("2d");
+        const { text, x, y} = info;
+        const { fontSize = 20, fontFamily = 'Arial', color = 'black', textAlign = 'center', textBaseline = 'top'} = style;
+
+        context.beginPath();
+        context.font = fontSize + 'px ' + fontFamily;
+        context.textAlign = textAlign;
+        context.textBaseline = textBaseline;
+        context.fillStyle = color;
+        context.fillText(text, x, y);
+        context.stroke();
+    } 
+
     const render = () => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
@@ -37,17 +57,18 @@ const Main = ({ sendMyPosition, users }) => {
         users.forEach((item) => {
             characters.push(new Image());
         });
-        characters.forEach((character, index) => {
+        characters.forEach((character, index) => { 
             if (users[index].characterType === "woman1") {
-                character.src = characterImages.woman1[currentFrame];
+                character.src = index === 0 ? characterImages.woman1[currentFrame] : characterImages.woman1[0];
             } else if (users[index].characterType === "man1") {
-                character.src = characterImages.man1[currentFrame];
+                character.src = index === 0 ? characterImages.man1[currentFrame] : characterImages.man1[0];
             }
             character.onload = () => {
                 if (index === 0) {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
                 }
+                writeText({ text: users[index].name, x: positionRef.current[index].x + 22, y: positionRef.current[index].y - 15})
                 context.drawImage(character, positionRef.current[index].x, positionRef.current[index].y);
             };
         });
