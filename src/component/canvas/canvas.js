@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import characterImages from "../user/CharacterArray";
-import background from "../../static/image/characterimages/restaurant.jpeg";
+import background from "../../static/image/background/restaurant.jpeg";
 import "./canvas.css";
 
 const MAP_CONSTANTS = {};
@@ -10,7 +10,7 @@ MAP_CONSTANTS.KEY_LEFT = 37;
 MAP_CONSTANTS.KEY_DOWN = 38;
 MAP_CONSTANTS.KEY_RIGHT = 39;
 MAP_CONSTANTS.KEY_UP = 40;
-MAP_CONSTANTS.SPEED = 4;
+MAP_CONSTANTS.SPEED = 3;
 MAP_CONSTANTS.FRAMES_LENGTH = 8;
 
 const Main = ({ sendMyPosition, users, id }) => {
