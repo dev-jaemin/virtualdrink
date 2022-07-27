@@ -1,5 +1,15 @@
 @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
 
+@font-face {
+    font-family: "CookieRun Regular";
+    src: url("/src/static/fonts/CookieRun\ Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "CookieRun Black";
+    src: url("/src/static/fonts/CookieRun\ Black.ttf") format("truetype");
+}
+
 * {
     font-family: "Spoqa Han Sans Neo", "sans-serif";
 }
