@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import io from "socket.io-client";
 import Canvas from "../../component/canvas/canvas";
 import ChatComponent from "../../component/chat/ChatComponent";
@@ -260,7 +259,6 @@ const Mainpage = () => {
             setUsersPos(Object.values(data.userPos));
         });
 
-        // for Chatting
         socketRef.current.on("getChat", (data) => {
             setChatData((chatData) => [...chatData, data]);
         });
@@ -280,7 +278,7 @@ const Mainpage = () => {
     return (
         <div style={{ height: "95vh" }}>
             <VideoStream localVideoRef={localVideoRef} users={users} />
-            <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} />
+            <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} chatData={chatData} />
             <ChatComponent chatData={chatData} setChatTextInput={setChatTextInput} sendChat={sendChat} />
         </div>
     );

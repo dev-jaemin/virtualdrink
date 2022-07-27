@@ -13,10 +13,13 @@ MAP_CONSTANTS.KEY_UP = 40;
 MAP_CONSTANTS.SPEED = 3;
 MAP_CONSTANTS.FRAMES_LENGTH = 8;
 
-const Main = ({ sendMyPosition, users, id }) => {
+const CHAT_DURATION = 3000;
+
+const Main = ({ sendMyPosition, users, id, chatData }) => {
     const canvasRef = useRef(null);
     const requestAnimationRef = useRef(null);
     const [pressedKey, setPressedKey] = useState(null);
+    const [bubbles, setBubbles] = useState([]);
     let positions = [];
     let USER_INDEX;
 
@@ -40,7 +43,7 @@ const Main = ({ sendMyPosition, users, id }) => {
     const writeText = (info, style = {}) => {
         const context = canvasRef.current.getContext("2d");
         const { text, x, y } = info;
-        const { fontSize = 16, fontFamily = "Spoqa Han Sans Neo", color = "#ffffff", textAlign = "center", textBaseline = "top" } = style;
+        const { fontSize = 10, fontFamily = "Spoqa Han Sans Neo", color = "#ffffff", textAlign = "center", textBaseline = "top" } = style;
 
         context.beginPath();
         context.font = fontSize + "px " + fontFamily;
@@ -55,7 +58,7 @@ const Main = ({ sendMyPosition, users, id }) => {
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
         let characters = [];
-        users.forEach((item) => {
+        users.forEach(() => {
             characters.push(new Image());
         });
         characters.forEach((character, index) => {
@@ -69,7 +72,14 @@ const Main = ({ sendMyPosition, users, id }) => {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
                 }
-                writeText({ text: users[index].nickname, x: positions[index].x + 20, y: positions[index].y - 15 });
+                writeText({ text: users[index].nickname, x: positions[index].x + 20, y: positions[index].y + 70 });
+
+                // for speech bubble
+                const userBubbles = bubbles.filter((item) => item.nickname === users[index].nickname);
+                if (userBubbles[userBubbles.length - 1]) {
+                    writeText({ text: userBubbles[userBubbles.length - 1].text, x: positions[index].x + 20, y: positions[index].y - 10 });
+                }
+
                 context.drawImage(character, positions[index].x, positions[index].y);
             };
         });
@@ -111,6 +121,18 @@ const Main = ({ sendMyPosition, users, id }) => {
             cancelAnimationFrame(requestAnimationRef.current);
         };
     });
+
+    useEffect(() => {
+        if (chatData.length >= 1) {
+            const lastChat = chatData[chatData.length - 1];
+
+            setBubbles([...bubbles, lastChat]);
+
+            setTimeout(() => {
+                setBubbles(bubbles.filter((item, index) => index !== 0));
+            }, CHAT_DURATION);
+        }
+    }, [chatData]);
 
     return (
         <canvas
