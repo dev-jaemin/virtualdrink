@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import characterImages from "../user/CharacterArray";
-import background from "../../static/image/characterimages/bkgnd.png";
+import background from "../../static/image/characterimages/restaurant.jpeg";
 import "./canvas.css";
 
 const MAP_CONSTANTS = {};
@@ -10,7 +10,7 @@ MAP_CONSTANTS.KEY_LEFT = 37;
 MAP_CONSTANTS.KEY_DOWN = 38;
 MAP_CONSTANTS.KEY_RIGHT = 39;
 MAP_CONSTANTS.KEY_UP = 40;
-MAP_CONSTANTS.SPEED = 3;
+MAP_CONSTANTS.SPEED = 4;
 MAP_CONSTANTS.FRAMES_LENGTH = 8;
 
 const Main = ({ sendMyPosition, users, id }) => {
@@ -40,7 +40,7 @@ const Main = ({ sendMyPosition, users, id }) => {
     const writeText = (info, style = {}) => {
         const context = canvasRef.current.getContext("2d");
         const { text, x, y } = info;
-        const { fontSize = 16, fontFamily = "Spoqa Han Sans Neo", color = "black", textAlign = "center", textBaseline = "top" } = style;
+        const { fontSize = 16, fontFamily = "Spoqa Han Sans Neo", color = "#ffffff", textAlign = "center", textBaseline = "top" } = style;
 
         context.beginPath();
         context.font = fontSize + "px " + fontFamily;
@@ -118,8 +118,7 @@ const Main = ({ sendMyPosition, users, id }) => {
             className="field"
             style={{
                 backgroundImage: `url(${background})`,
-                backgroundSize: "cover",
-                overflow: "hidden",
+                backgroundSize: "90%",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
             }}
