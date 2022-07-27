@@ -1,0 +1,22 @@
+.chat_wrapper {
+    position: fixed;
+    top: 70%;
+    left: 5%;
+    padding: 10px;
+    width: 18vw;
+    z-index: 100;
+    background-color: rgba(200, 200, 200, 0.5);
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.chat_section {
+    height: 15vh;
+    overflow: scroll;
+}
+
+.send_section > input {
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+}

@@ -14,7 +14,6 @@ const Mainpage = () => {
     const sendPCRef = useRef();
     const receivePCsRef = useRef({});
     const localVideoRef = useRef(null);
-    const [searchParams] = useSearchParams();
 
     const [users, setUsers] = useState([]);
     const [usersPos, setUsersPos] = useState([]);
@@ -279,7 +278,7 @@ const Mainpage = () => {
     }, [closeReceivePC, createReceivePC, createSenderOffer, createSenderPeerConnection, getLocalStream]);
 
     return (
-        <div>
+        <div style={{ height: "95vh" }}>
             <VideoStream localVideoRef={localVideoRef} users={users} />
             <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} />
             <ChatComponent chatData={chatData} setChatTextInput={setChatTextInput} sendChat={sendChat} />

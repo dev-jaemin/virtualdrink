@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import characterImages from "../user/CharacterArray";
 import background from "../../static/image/characterimages/bkgnd.png";
+import "./canvas.css";
 
 const MAP_CONSTANTS = {};
-MAP_CONSTANTS.IMG_WIDTH = 116;
-MAP_CONSTANTS.IMG_HEIGHT = 125;
+MAP_CONSTANTS.IMG_WIDTH = 50;
+MAP_CONSTANTS.IMG_HEIGHT = 60;
 MAP_CONSTANTS.KEY_LEFT = 37;
 MAP_CONSTANTS.KEY_DOWN = 38;
 MAP_CONSTANTS.KEY_RIGHT = 39;
 MAP_CONSTANTS.KEY_UP = 40;
-MAP_CONSTANTS.SPEED = 8;
+MAP_CONSTANTS.SPEED = 3;
 MAP_CONSTANTS.FRAMES_LENGTH = 8;
 
 const Main = ({ sendMyPosition, users, id }) => {
@@ -39,7 +40,7 @@ const Main = ({ sendMyPosition, users, id }) => {
     const writeText = (info, style = {}) => {
         const context = canvasRef.current.getContext("2d");
         const { text, x, y } = info;
-        const { fontSize = 20, fontFamily = "Arial", color = "black", textAlign = "center", textBaseline = "top" } = style;
+        const { fontSize = 16, fontFamily = "Spoqa Han Sans Neo", color = "black", textAlign = "center", textBaseline = "top" } = style;
 
         context.beginPath();
         context.font = fontSize + "px " + fontFamily;
@@ -68,7 +69,7 @@ const Main = ({ sendMyPosition, users, id }) => {
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
                 }
-                writeText({ text: users[index].nickname, x: positions[index].x + 22, y: positions[index].y - 15 });
+                writeText({ text: users[index].nickname, x: positions[index].x + 20, y: positions[index].y - 15 });
                 context.drawImage(character, positions[index].x, positions[index].y);
             };
         });
@@ -114,6 +115,7 @@ const Main = ({ sendMyPosition, users, id }) => {
     return (
         <canvas
             ref={canvasRef}
+            className="field"
             style={{
                 backgroundImage: `url(${background})`,
                 backgroundSize: "cover",
