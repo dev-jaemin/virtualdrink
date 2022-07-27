@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import characterImages from "../user/CharacterArray";
 import background from "../../static/image/characterimages/bkgnd.png";
-import { hasSelectionSupport } from "@testing-library/user-event/dist/utils";
 
 const MAP_CONSTANTS = {};
 MAP_CONSTANTS.IMG_WIDTH = 116;
@@ -35,7 +34,7 @@ const Main = ({ sendMyPosition, users }) => {
         positionRef.current[index] = {x : item.x, y: item.y};
     })
 
-    
+
     const writeText = (info, style = {}) => {
         const context = canvasRef.current.getContext("2d");
         const { text, x, y} = info;
@@ -62,6 +61,10 @@ const Main = ({ sendMyPosition, users }) => {
                 character.src = index === 0 ? characterImages.woman1[currentFrame] : characterImages.woman1[0];
             } else if (users[index].characterType === "man1") {
                 character.src = index === 0 ? characterImages.man1[currentFrame] : characterImages.man1[0];
+            } else if (users[index].characterType === "woman2") {
+                character.src = index === 0 ? characterImages.woman2[currentFrame] : characterImages.woman2[0];
+            } else if (users[index].characterType === "man2") {
+                character.src = index === 0 ? characterImages.man2[currentFrame] : characterImages.man2[0];
             }
             character.onload = () => {
                 if (index === 0) {

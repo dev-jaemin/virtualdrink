@@ -177,6 +177,11 @@ const Mainpage = () => {
         });
     };
 
+    const ready369 = () =>{
+        socketRef.current.emit("369 start");
+    };
+
+
     useEffect(() => {
         socketRef.current = io.connect(SOCKET_SERVER_URL);
         getLocalStream();
@@ -252,6 +257,19 @@ const Mainpage = () => {
             setUsersPos(Object.values(data.userPos));
         });
 
+        socketRef.current.on("myTurn", () =>{
+            alert("It's your turn!")
+        });
+
+        socketRef.current.on("getCorrect", (user) =>{
+            console.log(user.id+" is correct!");
+        });
+
+        socketRef.current.on("getIncorrect", (user) =>{
+            console.log(user.id+" is wrong! Game over");
+        });
+        
+        
         return () => {
             if (socketRef.current) {
                 socketRef.current.disconnect();
@@ -268,6 +286,7 @@ const Mainpage = () => {
         <div>
             <VideoStream localVideoRef={localVideoRef} users={users} />
             <Canvas users={usersPos} socketRef={socketRef} sendMyPosition={sendMyPosition} />
+            <button onClick={ready369}>ready 369</button>
         </div>
     );
 };
