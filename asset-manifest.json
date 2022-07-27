@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.942e712c.css",
+    "main.js": "/static/js/main.ea6ca74c.js",
+    "static/media/SooltherTownIntro.gif": "/static/media/SooltherTownIntro.206b62946228a272b451.gif",
+    "static/media/CookieRun Regular.ttf": "/static/media/CookieRun Regular.52560075f5d887966bf2.ttf",
+    "static/media/CookieRun Black.ttf": "/static/media/CookieRun Black.00ee0089b5b041ab4237.ttf",
+    "static/media/intro.jpg": "/static/media/intro.78db3c7ae6a7367ed1f7.jpg",
+    "static/media/restaurant.jpeg": "/static/media/restaurant.6936fccd51f14e7d55a3.jpeg",
+    "index.html": "/index.html",
+    "main.942e712c.css.map": "/static/css/main.942e712c.css.map",
+    "main.ea6ca74c.js.map": "/static/js/main.ea6ca74c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.942e712c.css",
+    "static/js/main.ea6ca74c.js"
+  ]
+}
