@@ -38,7 +38,7 @@ const Main = ({ sendMyPosition, users, id, chatData }) => {
         if (newY < 0 || newY > canvasRef.current.height - MAP_CONSTANTS.IMG_HEIGHT) return;
         positions[USER_INDEX] = { x: newX, y: newY };
         sendMyPosition(newX, newY, dir);
-    };
+    }; 
 
     const writeText = (info, style = {}) => {
         const context = canvasRef.current.getContext("2d");
@@ -62,10 +62,22 @@ const Main = ({ sendMyPosition, users, id, chatData }) => {
             characters.push(new Image());
         });
         characters.forEach((character, index) => {
-            if (users[index].characterType === "woman1") {
-                character.src = characterImages.woman1[users[index].direction];
-            } else if (users[index].characterType === "man1") {
-                character.src = characterImages.man1[users[index].direction];
+            switch(users[index].characterType){
+                case "woman1":
+                    character.src = characterImages.woman1[users[index].direction];
+                    break;
+                case "man1":
+                    character.src = characterImages.man1[users[index].direction];
+                    break;
+                case "woman2":
+                    character.src = characterImages.woman2[users[index].direction];
+                    break;
+                case "man2":
+                    character.src = characterImages.man2[users[index].direction];
+                    break;
+                default:
+                    character.src = characterImages.woman1[users[index].direction];
+                    break;
             }
             character.onload = () => {
                 if (index === 0) {

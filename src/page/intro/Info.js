@@ -1,7 +1,9 @@
-import { useNavigate } from "react-router-dom";
-import man from "../../static/image/characterimages/m0.gif";
-import woman from "../../static/image/characterimages/w0.gif";
+import man1 from "../../static/image/characterimages/m0.gif";
+import woman1 from "../../static/image/characterimages/w0.gif";
+import man2 from "../../static/image/characterimages/m4.gif";
+import woman2 from "../../static/image/characterimages/w4.gif";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Info = () => {
     const navigate = useNavigate();
@@ -52,9 +54,13 @@ const Info = () => {
                     <label for="characterType">Choose character </label>
                     <br />
                     <input type="checkbox" name="man1" onClick={clickCheck} />
-                    <img src={man} alt="No image" />
+                    <img src={man1} alt="man1" />
                     <input type="checkbox" name="woman1" onClick={clickCheck} />
-                    <img src={woman} alt="No image" />
+                    <img src={woman1} alt="woman1" />
+                    <input type="checkbox" name="man2" onClick={clickCheck} />
+                    <img src={man2} alt="man2" />
+                    <input type="checkbox" name="woman2" onClick={clickCheck} />
+                    <img src={woman2} alt="woman2" />
                 </div>
                 <div className="info_submit_btn" onClick={enterMain}>
                     Enter
