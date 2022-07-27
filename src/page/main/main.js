@@ -190,7 +190,9 @@ const Mainpage = () => {
     };
 
     useEffect(() => {
-        socketRef.current = io.connect(SOCKET_SERVER_URL);
+        socketRef.current = io.connect(SOCKET_SERVER_URL, {
+            transports: ["websocket"],
+        });
         getLocalStream();
 
         socketRef.current.on("userEnter", (data) => {
