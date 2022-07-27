@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import io from "socket.io-client";
 import Canvas from "../../component/canvas/canvas";
+import ChatComponent from "../../component/chat/ChatComponent";
 import VideoStream from "../../component/video/VideoStream";
 import { pcConfig } from "./config";
 
@@ -18,6 +19,9 @@ const Mainpage = () => {
     const [users, setUsers] = useState([]);
     const [usersPos, setUsersPos] = useState([]);
 
+    const [chatData, setChatData] = useState([]);
+    const [chatTextInput, setChatTextInput] = useState("");
+
     const closeReceivePC = useCallback((id) => {
         console.log(`close : ${id}`);
         if (!receivePCsRef.current[id]) return;
@@ -31,7 +35,7 @@ const Mainpage = () => {
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: true,
             });
-            // console.log("create receiver offer success");
+            console.log("create receiver offer success");
             // 아래의 코드에서 맨 앞 await를 지운 적 있음
             pc.setLocalDescription(new RTCSessionDescription(sdp));
             if (!socketRef.current) return;
@@ -53,7 +57,7 @@ const Mainpage = () => {
             receivePCsRef.current = { ...receivePCsRef.current, [socketID]: pc };
             pc.onicecandidate = (e) => {
                 if (!(e.candidate && socketRef.current)) return;
-                // console.log("receiver PC onicecandidate");
+                console.log("receiver PC onicecandidate");
                 socketRef.current.emit("receiverCandidate", {
                     candidate: e.candidate,
                     receiverSocketID: socketRef.current.id,
@@ -64,7 +68,7 @@ const Mainpage = () => {
                 console.log(e);
             };
             pc.ontrack = (e) => {
-                // console.log("ontrack success");
+                console.log("ontrack success");
                 setUsers((oldUsers) =>
                     oldUsers
                         .filter((user) => user.id !== socketID)
@@ -103,7 +107,7 @@ const Mainpage = () => {
                 offerToReceiveAudio: false,
                 offerToReceiveVideo: false,
             });
-            // console.log("create sender offer success");
+            console.log("create sender offer success");
             // 아래의 코드에서 맨 앞 await를 지운 적 있음
             sendPCRef.current.setLocalDescription(new RTCSessionDescription(sdp));
             if (!socketRef.current) return;
@@ -121,7 +125,7 @@ const Mainpage = () => {
         const pc = new RTCPeerConnection(pcConfig);
         pc.onicecandidate = (e) => {
             if (!(e.candidate && socketRef.current)) return;
-            // console.log("sender PC onicecandidate");
+            console.log("sender PC onicecandidate");
             socketRef.current.emit("senderCandidate", {
                 candidate: e.candidate,
                 senderSocketID: socketRef.current.id,
@@ -131,7 +135,7 @@ const Mainpage = () => {
             console.log(e);
         };
         if (localStreamRef.current) {
-            // console.log("add local stream");
+            console.log("add local stream");
             localStreamRef.current.getTracks().forEach((track) => {
                 if (!localStreamRef.current) return;
                 pc.addTrack(track, localStreamRef.current);
@@ -159,9 +163,9 @@ const Mainpage = () => {
 
             socketRef.current.emit("joinRoom", {
                 id: socketRef.current.id,
-                nickname: searchParams.get("nickname") || "guest",
-                characterType: searchParams.get("characterType") || "man1",
-                roomID: searchParams.get("roomID") || "1234",
+                nickname: window.sessionStorage.getItem("nickname") || "guest",
+                characterType: window.sessionStorage.getItem("characterType") || "man1",
+                roomID: window.sessionStorage.getItem("roomID") || "1234",
             });
         } catch (e) {
             console.log(`getUserMedia error: ${e}`);
@@ -177,10 +181,15 @@ const Mainpage = () => {
         });
     };
 
-    const ready369 = () =>{
-        socketRef.current.emit("369 start");
+    const sendChat = () => {
+        if (chatTextInput !== "") {
+            socketRef.current.emit("sendChat", {
+                nickname: window.sessionStorage.getItem("nickname") || "guest",
+                text: chatTextInput,
+            });
+            setChatTextInput("");
+        }
     };
-
 
     useEffect(() => {
         socketRef.current = io.connect(SOCKET_SERVER_URL);
@@ -205,7 +214,7 @@ const Mainpage = () => {
         socketRef.current.on("getSenderAnswer", async (data) => {
             try {
                 if (!sendPCRef.current) return;
-                // console.log("get sender answer");
+                console.log("get sender answer");
                 // console.log(data.sdp);
                 await sendPCRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
             } catch (error) {
@@ -226,11 +235,11 @@ const Mainpage = () => {
 
         socketRef.current.on("getReceiverAnswer", async (data) => {
             try {
-                // console.log(`get socketID(${data.id})'s answer`);
+                console.log(`get socketID(${data.id})'s answer`);
                 const pc = receivePCsRef.current[data.id];
                 if (!pc) return;
                 await pc.setRemoteDescription(data.sdp);
-                // console.log(`socketID(${data.id})'s set remote sdp success`);
+                console.log(`socketID(${data.id})'s set remote sdp success`);
             } catch (error) {
                 console.log(error);
             }
@@ -238,38 +247,25 @@ const Mainpage = () => {
 
         socketRef.current.on("getReceiverCandidate", async (data) => {
             try {
-                //  console.log(`get socketID(${data.id})'s candidate`);
+                console.log(`get socketID(${data.id})'s candidate`);
                 const pc = receivePCsRef.current[data.id];
                 if (!(pc && data.candidate)) return;
                 await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-                // console.log(`socketID(${data.id})'s candidate add success`);
+                console.log(`socketID(${data.id})'s candidate add success`);
             } catch (error) {
                 console.log(error);
             }
         });
 
         socketRef.current.on("updatePlayersMovement", async (data) => {
-            // const changedUser = users.filter((user) => {
-            //     return user.id === data.id;
-            // })[0];
-            // console.log(data);
-            console.log(data);
             setUsersPos(Object.values(data.userPos));
         });
 
-        socketRef.current.on("myTurn", () =>{
-            alert("It's your turn!")
+        // for Chatting
+        socketRef.current.on("getChat", (data) => {
+            setChatData((chatData) => [...chatData, data]);
         });
 
-        socketRef.current.on("getCorrect", (user) =>{
-            console.log(user.id+" is correct!");
-        });
-
-        socketRef.current.on("getIncorrect", (user) =>{
-            console.log(user.id+" is wrong! Game over");
-        });
-        
-        
         return () => {
             if (socketRef.current) {
                 socketRef.current.disconnect();
@@ -285,8 +281,8 @@ const Mainpage = () => {
     return (
         <div>
             <VideoStream localVideoRef={localVideoRef} users={users} />
-            <Canvas users={usersPos} socketRef={socketRef} sendMyPosition={sendMyPosition} />
-            <button onClick={ready369}>ready 369</button>
+            <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} />
+            <ChatComponent chatData={chatData} setChatTextInput={setChatTextInput} sendChat={sendChat} />
         </div>
     );
 };
