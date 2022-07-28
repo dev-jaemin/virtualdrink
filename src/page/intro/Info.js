@@ -1,8 +1,8 @@
 
-import man1 from "../../static/image/characterimages/m0.gif";
-import woman1 from "../../static/image/characterimages/w0.gif";
-import man2 from "../../static/image/characterimages/m4.gif";
-import woman2 from "../../static/image/characterimages/w4.gif";
+import man1 from "../../static/image/characterimages/man1.gif";
+import woman1 from "../../static/image/characterimages/woman1.gif";
+import man2 from "../../static/image/characterimages/man2.gif";
+import woman2 from "../../static/image/characterimages/woman2.gif";
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 

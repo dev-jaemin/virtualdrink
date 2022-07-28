@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import users from "../user/CharacterArray";
-import background from "../../characterimages/bkgnd.png"
 
 const MAP_CONSTANTS = {};
 MAP_CONSTANTS.IMG_WIDTH = 116;
@@ -18,6 +17,7 @@ const UserMoving = (characterType) => {
   const positionRef = useRef({ x: 0, y: 0 });
   const [pressedKey, setPressedKey] = useState(null);
   const [currentFrame, setCurrentFrame] = useState(0);
+  const [timer, setTimer] = useState(0);
 
   const move = ({ x, y, dir }) => {
     const newX = positionRef.current.x + x;
@@ -27,10 +27,16 @@ const UserMoving = (characterType) => {
     if (newY < 0 || newY > canvasRef.current.height - MAP_CONSTANTS.IMG_HEIGHT)
       return;
     positionRef.current = { x: newX, y: newY };
-    setCurrentFrame(dir);
+    
+    if(0 <= timer % 10 && timer % 10 <= 4){
+      setCurrentFrame(dir);
+    } else {
+      setCurrentFrame(dir + 1);
+    }
   };
 
   const render = () => {
+    setTimer((prev) => prev + 1);
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     const character = new Image();
@@ -49,7 +55,6 @@ const UserMoving = (characterType) => {
         positionRef.current.y
       );
     };
-
     handleKey();
     requestAnimationRef.current = requestAnimationFrame(render);
   };
@@ -57,13 +62,13 @@ const UserMoving = (characterType) => {
   const handleKey = () => {
     switch (pressedKey) {
       case MAP_CONSTANTS.KEY_LEFT:
-        move({ x: -1 * MAP_CONSTANTS.SPEED, y: 0, dir: 1 });
+        move({ x: -1 * MAP_CONSTANTS.SPEED, y: 0, dir: 2 });
         return;
       case MAP_CONSTANTS.KEY_DOWN:
-        move({ x: 0, y: -1 * MAP_CONSTANTS.SPEED, dir: 3 });
+        move({ x: 0, y: -1 * MAP_CONSTANTS.SPEED, dir: 6 });
         return;
       case MAP_CONSTANTS.KEY_RIGHT:
-        move({ x: MAP_CONSTANTS.SPEED, y: 0, dir: 2 });
+        move({ x: MAP_CONSTANTS.SPEED, y: 0, dir: 4 });
         return;
       case MAP_CONSTANTS.KEY_UP:
         move({ x: 0, y: MAP_CONSTANTS.SPEED, dir: 0 });
@@ -91,7 +96,7 @@ const UserMoving = (characterType) => {
     <canvas
       ref={canvasRef}
       style={{
-            backgroundImage: `url(${background})`,
+            //backgroundImage: `url(${background})`,
             backgroundSize: "cover",
             overflow: "hidden",
             backgroundRepeat: "no-repeat",

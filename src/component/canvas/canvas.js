@@ -16,6 +16,7 @@ const Main = ({ sendMyPosition, users, id }) => {
     const canvasRef = useRef(null);
     const requestAnimationRef = useRef(null);
     const [pressedKey, setPressedKey] = useState(null);
+    const [timer, setTimer] = useState(0);
     let positions = [];
     let USER_INDEX;
 
@@ -51,6 +52,8 @@ const Main = ({ sendMyPosition, users, id }) => {
     };
 
     const render = () => {
+        setTimer((prev) => prev + 1);
+        var frame = (0 <= timer % 10 && timer % 10 <= 4) + 0;
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
         let characters = [];
@@ -60,19 +63,19 @@ const Main = ({ sendMyPosition, users, id }) => {
         characters.forEach((character, index) => {
             switch(users[index].characterType){
                 case "woman1":
-                    character.src = characterImages.woman1[users[index].direction];
+                    character.src = characterImages.woman1[users[index].direction][frame];
                     break;
                 case "man1":
-                    character.src = characterImages.man1[users[index].direction];
+                    character.src = characterImages.man1[users[index].direction][frame];
                     break;
                 case "woman2":
-                    character.src = characterImages.woman2[users[index].direction];
+                    character.src = characterImages.woman2[users[index].direction][frame];
                     break;
                 case "man2":
-                    character.src = characterImages.man2[users[index].direction];
+                    character.src = characterImages.man2[users[index].direction][frame];
                     break;
                 default:
-                    character.src = characterImages.woman1[users[index].direction];
+                    character.src = characterImages.woman1[users[index].direction][frame];
                     break;
             }
             character.onload = () => {
