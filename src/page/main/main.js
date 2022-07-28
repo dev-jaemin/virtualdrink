@@ -191,6 +191,7 @@ const Mainpage = () => {
 
     useEffect(() => {
         socketRef.current = io.connect(SOCKET_SERVER_URL, {
+            path: "/socket.io",
             transports: ["websocket"],
         });
         getLocalStream();
