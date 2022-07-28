@@ -19,7 +19,7 @@ const Main = ({ sendMyPosition, users, id, chatData }) => {
     const canvasRef = useRef(null);
     const requestAnimationRef = useRef(null);
     const [pressedKey, setPressedKey] = useState(null);
-    const [timer, setTimer] = useState(0);
+    const date = new Date();
     const [bubbles, setBubbles] = useState([]);
     let positions = [];
     let USER_INDEX;
@@ -39,7 +39,7 @@ const Main = ({ sendMyPosition, users, id, chatData }) => {
         if (newY < 0 || newY > canvasRef.current.height - MAP_CONSTANTS.IMG_HEIGHT) return;
         positions[USER_INDEX] = { x: newX, y: newY };
         sendMyPosition(newX, newY, dir);
-    }; 
+    };
 
     const writeText = (info, style = {}) => {
         const context = canvasRef.current.getContext("2d");
@@ -56,8 +56,8 @@ const Main = ({ sendMyPosition, users, id, chatData }) => {
     };
 
     const render = () => {
-        setTimer((prev) => prev + 1);
-        var frame = (0 <= timer % 10 && timer % 10 <= 4) + 0;
+        var time = date.getTime();
+        var frame = (0 <= time % 200 && time % 200 <= 99) + 0;
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
         let characters = [];
@@ -65,7 +65,7 @@ const Main = ({ sendMyPosition, users, id, chatData }) => {
             characters.push(new Image());
         });
         characters.forEach((character, index) => {
-            switch(users[index].characterType){
+            switch (users[index].characterType) {
                 case "woman1":
                     character.src = characterImages.woman1[users[index].direction][frame];
                     break;
