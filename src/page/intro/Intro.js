@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
+import "./Info.css";
 
 const Intro = () => {
     return (
-        <div>
-            Virtual Drink<br/>
+        <div className="intro_wrapper">
             <Link to="/info">
-                <button>Enter</button>
+                <button className="cta_button">START</button>
             </Link>
         </div>
     );

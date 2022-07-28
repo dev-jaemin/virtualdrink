@@ -1,0 +1,10 @@
+video {
+    width: 15vw;
+    height: 100%;
+    background-color: black;
+    object-fit: cover;
+    margin: 5px;
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+    -moz-transform: rotateY(180deg); /* Firefox */
+}

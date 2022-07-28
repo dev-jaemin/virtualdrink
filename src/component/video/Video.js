@@ -1,18 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import Styled from "styled-components";
 
-const Container = Styled.div`
-    position: relative;
-    display: inline-block;
-    width: 240px;
-    height: 240px;
-    margin: 5px;
-`;
-
 const VideoContainer = Styled.video`
-    width: 240px;
-    height: 240px;
+    width: 15vw;
+    height: 100%;
     background-color: black;
+    object-fit: cover;
+    margin: 5px;
 `;
 
 const Video = ({ stream, muted }) => {
@@ -25,11 +19,7 @@ const Video = ({ stream, muted }) => {
         if (muted) setIsMuted(muted);
     }, [stream, muted]);
 
-    return (
-        <Container>
-            <VideoContainer ref={ref} muted={isMuted} autoPlay />
-        </Container>
-    );
+    return <VideoContainer ref={ref} muted={isMuted} autoPlay />;
 };
 
 export default Video;

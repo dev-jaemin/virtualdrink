@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import io from "socket.io-client";
 import Canvas from "../../component/canvas/canvas";
 import ChatComponent from "../../component/chat/ChatComponent";
@@ -8,13 +7,13 @@ import { pcConfig } from "./config";
 
 const Mainpage = () => {
     const SOCKET_SERVER_URL = process.env.REACT_APP_API_HOST;
+    const ROOM_ID = window.sessionStorage.getItem("roomID") || "1234";
 
     const socketRef = useRef();
     const localStreamRef = useRef();
     const sendPCRef = useRef();
     const receivePCsRef = useRef({});
     const localVideoRef = useRef(null);
-    const [searchParams] = useSearchParams();
 
     const [users, setUsers] = useState([]);
     const [usersPos, setUsersPos] = useState([]);
@@ -43,7 +42,7 @@ const Mainpage = () => {
                 sdp,
                 receiverSocketID: socketRef.current.id,
                 senderSocketID,
-                roomID: "1234",
+                roomID: ROOM_ID,
             });
         } catch (error) {
             console.log(error);
@@ -114,7 +113,7 @@ const Mainpage = () => {
             socketRef.current.emit("senderOffer", {
                 sdp,
                 senderSocketID: socketRef.current.id,
-                roomID: "1234",
+                roomID: ROOM_ID,
             });
         } catch (error) {
             console.log(error);
@@ -165,7 +164,7 @@ const Mainpage = () => {
                 id: socketRef.current.id,
                 nickname: window.sessionStorage.getItem("nickname") || "guest",
                 characterType: window.sessionStorage.getItem("characterType") || "man1",
-                roomID: window.sessionStorage.getItem("roomID") || "1234",
+                roomID: ROOM_ID,
             });
         } catch (e) {
             console.log(`getUserMedia error: ${e}`);
@@ -192,7 +191,10 @@ const Mainpage = () => {
     };
 
     useEffect(() => {
-        socketRef.current = io.connect(SOCKET_SERVER_URL);
+        socketRef.current = io.connect(SOCKET_SERVER_URL, {
+            path: "/socket.io",
+            transports: ["websocket"],
+        });
         getLocalStream();
 
         socketRef.current.on("userEnter", (data) => {
@@ -261,7 +263,6 @@ const Mainpage = () => {
             setUsersPos(Object.values(data.userPos));
         });
 
-        // for Chatting
         socketRef.current.on("getChat", (data) => {
             setChatData((chatData) => [...chatData, data]);
         });
@@ -279,9 +280,9 @@ const Mainpage = () => {
     }, [closeReceivePC, createReceivePC, createSenderOffer, createSenderPeerConnection, getLocalStream]);
 
     return (
-        <div>
+        <div style={{ height: "95vh" }}>
             <VideoStream localVideoRef={localVideoRef} users={users} />
-            <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} />
+            <Canvas users={usersPos} id={socketRef.current && socketRef.current.id} socketRef={socketRef} sendMyPosition={sendMyPosition} chatData={chatData} />
             <ChatComponent chatData={chatData} setChatTextInput={setChatTextInput} sendChat={sendChat} />
         </div>
     );

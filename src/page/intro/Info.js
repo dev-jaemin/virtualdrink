@@ -1,4 +1,3 @@
-
 import man1 from "../../static/image/characterimages/man1.gif";
 import woman1 from "../../static/image/characterimages/woman1.gif";
 import man2 from "../../static/image/characterimages/man2.gif";
@@ -39,29 +38,34 @@ const Info = () => {
     };
 
     return (
-        <div>
-            <div>
-                <label for="nickname">Your Nickname: </label>
-                <input type="text" name="nickname" id="nickname" onChange={onChange} />
-            </div>
+        <div className="info_wrapper">
+            <div className="info_form">
+                <div className="info_input_section">
+                    <label for="nickname">Nickname </label>
+                    <input type="text" name="nickname" id="nickname" onChange={onChange} />
+                </div>
 
-            <div>
-                <label for="roomId">Select RoomId: </label>
-                <input type="number" name="roomID" id="nickname" onChange={onChange} />
-            </div>
+                <div className="info_input_section">
+                    <label for="roomId">RoomID </label>
+                    <input type="number" name="roomID" id="nickname" onChange={onChange} />
+                </div>
 
-            <div>
-                <label for="characterType">Choose character: </label><br/>
-                <input type="checkbox" name="man1" onClick={clickCheck}/>
-                <img src={man1} alt="No image" />
-                <input type="checkbox" name="woman1" onClick={clickCheck}/>
-                <img src={woman1} alt="No image" />
-                <input type="checkbox" name="man2" onClick={clickCheck}/>
-                <img src={man2} alt="No image" />
-                <input type="checkbox" name="woman2" onClick={clickCheck}/>
-                <img src={woman2} alt="No image" />
+                <div style={{ margin: "0px 10px" }}>
+                    <label for="characterType">Choose character </label>
+                    <br />
+                    <input type="checkbox" name="man1" onClick={clickCheck} />
+                    <img src={man1} alt="man1" />
+                    <input type="checkbox" name="woman1" onClick={clickCheck} />
+                    <img src={woman1} alt="woman1" />
+                    <input type="checkbox" name="man2" onClick={clickCheck} />
+                    <img src={man2} alt="man2" />
+                    <input type="checkbox" name="woman2" onClick={clickCheck} />
+                    <img src={woman2} alt="woman2" />
+                </div>
+                <div className="info_submit_btn" onClick={enterMain}>
+                    Enter
+                </div>
             </div>
-            <div onClick={enterMain}>Enter</div>
         </div>
     );
 };
