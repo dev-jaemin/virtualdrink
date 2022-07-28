@@ -22,7 +22,6 @@ const Mainpage = () => {
     const [chatTextInput, setChatTextInput] = useState("");
 
     const closeReceivePC = useCallback((id) => {
-        console.log(`close : ${id}`);
         if (!receivePCsRef.current[id]) return;
         receivePCsRef.current[id].close();
         delete receivePCsRef.current[id];
@@ -34,8 +33,6 @@ const Mainpage = () => {
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: true,
             });
-            console.log("create receiver offer success");
-            // 아래의 코드에서 맨 앞 await를 지운 적 있음
             pc.setLocalDescription(new RTCSessionDescription(sdp));
             if (!socketRef.current) return;
             socketRef.current.emit("receiverOffer", {
@@ -56,7 +53,6 @@ const Mainpage = () => {
             receivePCsRef.current = { ...receivePCsRef.current, [socketID]: pc };
             pc.onicecandidate = (e) => {
                 if (!(e.candidate && socketRef.current)) return;
-                console.log("receiver PC onicecandidate");
                 socketRef.current.emit("receiverCandidate", {
                     candidate: e.candidate,
                     receiverSocketID: socketRef.current.id,
@@ -67,7 +63,6 @@ const Mainpage = () => {
                 console.log(e);
             };
             pc.ontrack = (e) => {
-                console.log("ontrack success");
                 setUsers((oldUsers) =>
                     oldUsers
                         .filter((user) => user.id !== socketID)
@@ -88,7 +83,6 @@ const Mainpage = () => {
     const createReceivePC = useCallback(
         (id) => {
             try {
-                console.log(`socketID(${id}) user entered`);
                 const pc = createReceiverPeerConnection(id);
                 if (!(socketRef.current && pc)) return;
                 createReceiverOffer(pc, id);
@@ -106,8 +100,6 @@ const Mainpage = () => {
                 offerToReceiveAudio: false,
                 offerToReceiveVideo: false,
             });
-            console.log("create sender offer success");
-            // 아래의 코드에서 맨 앞 await를 지운 적 있음
             sendPCRef.current.setLocalDescription(new RTCSessionDescription(sdp));
             if (!socketRef.current) return;
             socketRef.current.emit("senderOffer", {
@@ -124,7 +116,6 @@ const Mainpage = () => {
         const pc = new RTCPeerConnection(pcConfig);
         pc.onicecandidate = (e) => {
             if (!(e.candidate && socketRef.current)) return;
-            console.log("sender PC onicecandidate");
             socketRef.current.emit("senderCandidate", {
                 candidate: e.candidate,
                 senderSocketID: socketRef.current.id,
@@ -134,7 +125,6 @@ const Mainpage = () => {
             console.log(e);
         };
         if (localStreamRef.current) {
-            console.log("add local stream");
             localStreamRef.current.getTracks().forEach((track) => {
                 if (!localStreamRef.current) return;
                 pc.addTrack(track, localStreamRef.current);
@@ -202,7 +192,6 @@ const Mainpage = () => {
         });
 
         socketRef.current.on("allUsers", (data) => {
-            console.log(data);
             data.users.forEach((user) => createReceivePC(user.id));
             // user들의 포지션 정보 저장
             setUsersPos(Object.values(data.userPos));
@@ -216,8 +205,7 @@ const Mainpage = () => {
         socketRef.current.on("getSenderAnswer", async (data) => {
             try {
                 if (!sendPCRef.current) return;
-                console.log("get sender answer");
-                // console.log(data.sdp);
+
                 await sendPCRef.current.setRemoteDescription(new RTCSessionDescription(data.sdp));
             } catch (error) {
                 console.log(error);
@@ -227,9 +215,8 @@ const Mainpage = () => {
         socketRef.current.on("getSenderCandidate", async (data) => {
             try {
                 if (!(data.candidate && sendPCRef.current)) return;
-                // console.log("get sender candidate");
+
                 await sendPCRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
-                // console.log("candidate add success");
             } catch (error) {
                 console.log(error);
             }
@@ -237,11 +224,9 @@ const Mainpage = () => {
 
         socketRef.current.on("getReceiverAnswer", async (data) => {
             try {
-                console.log(`get socketID(${data.id})'s answer`);
                 const pc = receivePCsRef.current[data.id];
                 if (!pc) return;
                 await pc.setRemoteDescription(data.sdp);
-                console.log(`socketID(${data.id})'s set remote sdp success`);
             } catch (error) {
                 console.log(error);
             }
@@ -249,11 +234,9 @@ const Mainpage = () => {
 
         socketRef.current.on("getReceiverCandidate", async (data) => {
             try {
-                console.log(`get socketID(${data.id})'s candidate`);
                 const pc = receivePCsRef.current[data.id];
                 if (!(pc && data.candidate)) return;
                 await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-                console.log(`socketID(${data.id})'s candidate add success`);
             } catch (error) {
                 console.log(error);
             }
