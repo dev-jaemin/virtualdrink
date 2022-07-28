@@ -7,6 +7,7 @@ import { pcConfig } from "./config";
 
 const Mainpage = () => {
     const SOCKET_SERVER_URL = process.env.REACT_APP_API_HOST;
+    const ROOM_ID = window.sessionStorage.getItem("roomID") || "1234";
 
     const socketRef = useRef();
     const localStreamRef = useRef();
@@ -41,7 +42,7 @@ const Mainpage = () => {
                 sdp,
                 receiverSocketID: socketRef.current.id,
                 senderSocketID,
-                roomID: "1234",
+                roomID: ROOM_ID,
             });
         } catch (error) {
             console.log(error);
@@ -112,7 +113,7 @@ const Mainpage = () => {
             socketRef.current.emit("senderOffer", {
                 sdp,
                 senderSocketID: socketRef.current.id,
-                roomID: "1234",
+                roomID: ROOM_ID,
             });
         } catch (error) {
             console.log(error);
@@ -163,7 +164,7 @@ const Mainpage = () => {
                 id: socketRef.current.id,
                 nickname: window.sessionStorage.getItem("nickname") || "guest",
                 characterType: window.sessionStorage.getItem("characterType") || "man1",
-                roomID: window.sessionStorage.getItem("roomID") || "1234",
+                roomID: ROOM_ID,
             });
         } catch (e) {
             console.log(`getUserMedia error: ${e}`);
